@@ -1,0 +1,46 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07/",
+  "title": "تغيير مزدوج بالنسب المئوية",
+  "description": "الهدف 4.7 — تخفيض وتكبير مزدوج بالنسب المئوية: الكل الأصلي والكل الجديد والكل النهائي.",
+  "manufacture": "methodica",
+  "subject": "math",
+  "grade": [],
+  "subTopic": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/RATIO-PROP-SCL.PERCENT",
+  "learningObjective": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/PERCENT.DOUBLE-CHANGE",
+  "languages": [
+    "Hebrew"
+  ],
+  "estimatedTimeInMinutes": 96,
+  "createdAt": "2026-09-09T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "components": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-01/",
+      "order": 1
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-02/",
+      "order": 2
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-03/",
+      "order": 3
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-04/",
+      "order": 4
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-05/",
+      "order": 5
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-06/",
+      "order": 6
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-07/",
+      "order": 7
+    }
+  ]
+}

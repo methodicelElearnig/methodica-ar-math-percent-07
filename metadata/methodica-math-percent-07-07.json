@@ -1,0 +1,32 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-07/",
+  "title": "سؤال القمة (ب)",
+  "learningUnitId": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07/",
+  "componentPurpose": "assessment",
+  "isAssessment": true,
+  "manufacture": "methodica",
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 5,
+  "masteryLevel": "advanced",
+  "order": 7,
+  "depthLevel": "core-curriculum-advanced",
+  "cognitiveLevel": "process-thinking",
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 10,
+  "createdAt": "2026-09-09T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-07/methodica-math-percent-07-07-001/",
+      "title": "سؤال القمة (ب)",
+      "informationToBot": "هدف البند: سؤال القمة (ب). تغيير مزدوج بالنسب المئوية — الكل الأصلي والكل الجديد والكل النهائي. [مسودة — بانتظار موافقة مطوّرة التعلّم]",
+      "contentType": "assessment",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

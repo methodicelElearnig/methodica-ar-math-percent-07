@@ -1,0 +1,32 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-01/",
+  "title": "التشويق والتعليم — تخفيض مزدوج",
+  "learningUnitId": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07/",
+  "componentPurpose": "both",
+  "isAssessment": false,
+  "manufacture": "methodica",
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 2,
+  "masteryLevel": "intermediate",
+  "order": 1,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevel": "process-thinking",
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 20,
+  "createdAt": "2026-09-09T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-01/methodica-math-percent-07-01-001/",
+      "title": "التشويق والتعليم — تخفيض مزدوج",
+      "informationToBot": "هدف البند: التشويق والتعليم — تخفيض مزدوج. تغيير مزدوج بالنسب المئوية — الكل الأصلي والكل الجديد والكل النهائي. [مسودة — بانتظار موافقة مطوّرة التعلّم]",
+      "contentType": "acquisition",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

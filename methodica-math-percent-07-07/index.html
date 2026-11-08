@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>النسب المئوية — الهدف 4.7</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-subject-theme="math" class="fb-right">
+<div id="stage">
+<div id="app">
+
+<!-- Report/issue flag — shared, outside all screens -->
+  <button class="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+        <span class="flag-btn-icon">
+          <span class="flag-btn-glyph" aria-hidden="true">
+            <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none">
+              <path
+                d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z"
+                fill="currentColor" />
+            </svg>
+            <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none">
+              <path
+                d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z"
+                fill="currentColor" />
+            </svg>
+          </span>
+        </span>
+        <span class="flag-btn-label">هل وجدتم مشكلة؟</span>
+      </button>
+  <!-- ═══════════════════════════════════════════════════════════════
+       Screen 0 — deck slide 3 · hookOpenQuestion
+       Opinion hook: the learner picks a stance, nothing is marked right or
+       wrong here. Deck slide 4 is the reveal, so grading this screen would
+       spoil it. (The deck's green fill on option C IS the key — it belongs
+       to slide 4's copy, not to this screen's feedback.)
+       ═══════════════════════════════════════════════════════════════ -->
+  <!-- ═══ Screen 61 — deck slide 73 · TransitionScreen (מועד ב׳)
+       Same screen as slide 64 with a different gate line: 3 sub-questions,
+       answer 2 correctly. The deck never states how a learner is routed here
+       rather than to מועד א׳ — FLAG-PRODUCER. ═══ -->
+  <section class="screen active" data-screen="61" id="s61">
+    <div class="transition-content ts-content">
+      <!-- QA 02.11.26: opening lines replaced (producer) -->
+      <p class="ts-lead" data-reveal="1">أحسنتم!<br> إذا لم تتمكنوا من الإجابة بشكل صحيح عن بعض الأسئلة،<br> فمن المهم أن تفهموا ما الذي لا يزال غير واضح.</p>
+      <h1 class="ts-title ts-title--lg" data-reveal="1">والآن حان وقت سؤال التحدّي</h1>
+      <p class="ts-tail" data-reveal="1">يتضمّن السؤال 3 بنود، وعليكم الإجابة بشكل صحيح عن بندين على الأقل.</p>
+      <div class="transition-character ts-character" data-reveal="1" data-reveal-fade>
+        <video class="ts-img ts-img--scene" src="assets/video/character-1-climbing.mp4" autoplay loop muted playsinline preload="auto" aria-label="الشخصية المرافقة تتسلق جبلًا"></video>
+      </div>
+    </div>
+    <button class="btn-continue" onclick="goTo(62)">متابعة</button>
+    <button class="btn-back" onclick="goTo(60)">رجوع</button>
+  </section>
+
+<!-- ═══ Screen 62 — deck slide 74 · FullImageWithTextOverlay
+       Producer: a background-image template. The note also specifies the
+       interaction: hovering/clicking the `i` icon opens
+       "קוב הוא יחידת מידה לנפח." ═══ -->
+  <section class="screen bg-screen" data-screen="62" id="s62">
+    <img class="bg-photo" src="assets/img/lake-reserve.jpg" alt="خزان مياه صغير في محمية طبيعية">
+    <div class="bg-card bg-card--panel" data-reveal="1">
+      <!-- QA 02.11.26: wording (producer) - "במסגרת עבודת חקר יצאה טלי...", "גילתה שינוי" -->
+      <p>في إطار بحث في العلوم، خرجت ليلى لدراسة حالة خزان مياه صغير في محمية طبيعية.</p>
+      <p>في بداية الصيف، كان خزان المياه ممتلئًا، وكان حجم المياه فيه <span class="tooltip-word"><strong>120 ألف متر مكعب.</strong><button
+          type="button" class="term-info" aria-label="المتر المكعب وحدة لقياس الحجم"
+          onclick="this.classList.toggle('is-open')"><svg class="term-info-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><rect width="15" height="15" rx="7.5" fill="#3B2FC2"/><path d="M7.12219 12.327C6.89019 12.327 6.69419 12.293 6.53419 12.225C6.37819 12.157 6.26419 12.063 6.19219 11.943C6.12019 11.819 6.09419 11.673 6.11419 11.505C6.13419 11.325 6.16219 11.105 6.19819 10.845C6.23819 10.585 6.28019 10.293 6.32419 9.969C6.37219 9.645 6.42419 9.295 6.48019 8.919C6.53619 8.543 6.59019 8.151 6.64219 7.743C6.69819 7.335 6.75419 6.919 6.81019 6.495L6.11419 6.165L6.19819 5.691L8.28019 5.397L8.57419 5.535L7.78219 10.995C7.76219 11.139 7.77019 11.249 7.80619 11.325C7.84219 11.397 7.90019 11.433 7.98019 11.433C8.05219 11.433 8.13019 11.411 8.21419 11.367C8.30219 11.319 8.41419 11.239 8.55019 11.127L8.70619 11.493C8.66219 11.553 8.57219 11.649 8.43619 11.781C8.30419 11.913 8.12819 12.037 7.90819 12.153C7.68819 12.269 7.42619 12.327 7.12219 12.327ZM7.84219 4.593C7.60619 4.593 7.40419 4.505 7.23619 4.329C7.07219 4.153 6.99619 3.947 7.00819 3.711C7.02019 3.419 7.11619 3.173 7.29619 2.973C7.48019 2.773 7.72619 2.673 8.03419 2.673C8.29819 2.673 8.50819 2.759 8.66419 2.931C8.82019 3.099 8.89619 3.293 8.89219 3.513C8.88819 3.817 8.79819 4.073 8.62219 4.281C8.44619 4.489 8.18619 4.593 7.84219 4.593Z" fill="white"/></svg><span class="term-tooltip term-tooltip--below">المتر المكعب وحدة لقياس الحجم.</span></button></span></p>
+      <p>خلال الصيف، فحصت ليلى حجم المياه مرة أخرى واكتشفت تغيرًا...</p>
+    </div>
+    <button class="btn-continue" onclick="goTo(63)">متابعة</button>
+    <button class="btn-back" onclick="goTo(61)">رجوع</button>
+  </section>
+
+<!-- ═══ Screen 66 — deck slide 78 · the ending (background-image template)
+       The deck slide has NO bar, no המשך and no חזרה — it is the end of the
+       unit. `رجوع` is kept so the screen is not a dead end; QA 02.11.26 adds
+       the closing סיימתי. ═══ -->
+  <section class="screen bg-screen" data-screen="66" id="s66">
+    <img class="bg-photo bg-photo--full" src="assets/img/lake-refilled.jpg" alt="خزان المياه ممتلئ بعد الشتاء">
+    <div class="bg-card bg-card--panel bg-card--narrow" data-reveal="1">
+      <p>أنهت ليلى بحثها في العلوم بنجاح. وفي الشتاء الممطر الذي تلاه، امتلأ خزان المياه مجددًا بكمية تساوي ما سُحب منه وتبخّر.</p>
+    </div>
+    <!-- QA 02.11.26 (Maya): the closing scene ends on סיימתי, as proportion-03's
+         does - past the last screen with no next component, so it ends here -->
+    <button class="btn-continue" onclick="goTo(67)">انتهيت</button>
+    <button class="btn-back" onclick="goTo(65)">رجوع</button>
+  </section>
+
+
+
+<!-- Quiz hint overlay — shared, outside all .screen divs.
+       The bulb icon in the title is PART OF THE COMPONENT; do not ship without it.
+       .hint-title-text (not .hint-title) carries the words — quizOpenHint writes to
+       the span, because assigning textContent to the parent deletes the icon. -->
+  <div id="quiz-hint-overlay" class="hidden m-popup" role="dialog" aria-modal="true" aria-label="تلميح">
+    <div class="hint-popup">
+      <!-- 07.09: the bulb the hint card was missing. Plain-bulb variant
+           (viewBox 0 0 20.997 27.9988), the one the approved build uses in
+           the card title — deliberately NOT the button's rayed bulb. The
+           text lives in its own span so quizOpenHint() can rewrite it
+           without deleting the icon. -->
+      <h3 class="hint-title"><svg class="hint-title-icon" viewBox="0 0 20.997 27.9988" fill="none" aria-hidden="true"><path d="M17.4818 2.65764C15.2512 0.668476 12.2563 -0.275357 9.25683 0.0699765C4.59833 0.60431 0.748334 4.35748 0.103168 8.99148C-0.387999 12.5078 0.894168 16.0031 3.532 18.34C4.99267 19.6338 5.83033 21.5191 5.83033 23.5095V23.9155C5.83033 26.1671 7.662 27.9988 9.91367 27.9988H11.0803C13.332 27.9988 15.1637 26.1671 15.1637 23.9155V23.5036C15.1637 21.5366 16.041 19.6431 17.6347 18.1708C19.7708 16.1945 20.997 13.398 20.997 10.4988C20.997 7.50864 19.716 4.65031 17.4818 2.65764ZM13.997 23.9143C13.997 25.522 12.6892 26.831 11.0803 26.831H9.91367C8.30483 26.831 6.997 25.522 6.997 23.9143V23.5083C6.997 23.0545 6.9585 22.6041 6.88617 22.1643H14.1137C14.0367 22.6041 13.997 23.051 13.997 23.5025V23.9143ZM16.8425 17.3133C15.691 18.3773 14.865 19.6385 14.4077 20.9976H11.0792V12.1986C12.7323 11.9198 13.9958 10.479 13.9958 8.74764C13.9958 8.42564 13.7345 8.16431 13.4125 8.16431C13.0905 8.16431 12.8292 8.42564 12.8292 8.74764C12.8292 10.0345 11.7827 11.081 10.4958 11.081C9.209 11.081 8.1625 10.0345 8.1625 8.74764C8.1625 8.42564 7.90117 8.16431 7.57917 8.16431C7.25717 8.16431 6.99583 8.42564 6.99583 8.74764C6.99583 10.479 8.25933 11.9198 9.9125 12.1986V20.9976H6.60267C6.16633 19.6431 5.38 18.4193 4.3055 17.4661C1.9605 15.3895 0.821834 12.2815 1.25817 9.15248C1.831 5.03648 5.2505 1.70448 9.38867 1.22848C9.7655 1.18531 10.14 1.16431 10.511 1.16431C12.807 1.16431 14.9735 1.98448 16.7072 3.52914C18.6917 5.30014 19.8315 7.83998 19.8315 10.4976C19.8315 13.111 18.771 15.5318 16.8437 17.3133H16.8425Z" fill="white"/></svg><span class="hint-title-text">هل تتذكّرون كيف تحسبون؟</span></h3>
+      <p class="hint-body"></p>
+      <button class="hint-close-btn" onclick="quizCloseHint()">العودة إلى السؤال</button>
+    </div>
+  </div>
+
+  <!-- Problem-report modal (approved-units pattern; posts to the shared Google Form) -->
+  <div id="report-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">التبليغ عن مشكلة</h2>
+      <p class="report-modal-body">هل هناك شيء غير واضح أو لا يعمل كما يجب؟ أخبرونا بما حدث لنتمكن من معالجة المشكلة.</p>
+      <div class="report-field">
+        <label class="report-label" for="report-type">ما نوع المشكلة <span class="required-star">*</span></label>
+        <select class="report-select" id="report-type">
+          <option value="" disabled selected>اختاروا نوع المشكلة</option>
+          <option value="technical">عطل تقني أو شيء ما لا يعمل</option>
+          <option value="unclear">شيء ما غير واضح لي</option>
+          <option value="other">آخر</option>
+        </select>
+      </div>
+      <div class="report-field">
+        <label class="report-label" for="report-text">ماذا حدث؟ <span class="required-star">*</span></label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="صِفوا المشكلة..."></textarea>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+      <p class="report-error" id="report-error" hidden>يرجى اختيار نوع المشكلة ووصف ما حدث.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" onclick="submitReport()">إرسال</button>
+        <button class="report-cancel-btn" onclick="tryCloseReportModal()">إلغاء</button>
+      </div>
+      <div class="report-thanks" id="report-thanks" hidden>
+        <p>شكرًا! تم إرسال التبليغ. سنعالج المشكلة في أقرب وقت.</p>
+        <button class="report-submit-btn" onclick="forceCloseReportModal()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+  <div id="report-confirm-modal" class="report-modal-overlay m-popup" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="confirm-modal-title">هل تريدون إغلاق النافذة فعلًا؟</h2>
+      <p class="report-modal-body">إذا ضغطتم على إغلاق فلن يتم إرسال التبليغ</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" onclick="forceCloseReportModal()">إغلاق النافذة</button>
+        <button class="report-submit-btn" onclick="backToReportForm()">أريد التبليغ</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+  <script src="script.js?v=1"></script>
+  <script src="../unit-js/motion.js?v=1"></script>
+  <script src="../unit-js/report-modal.js?v=1"></script>
+  <script src="../unit-js/quiz-engine.js?v=1"></script>
+  <script src="../unit-js/questions.js?v=1"></script>
+  <script src="../unit-js/unit.js?v=1"></script>
+  <script src="../unit-js/engine.js?v=1"></script>
+</div>
+</div>
+</body>
+</html>

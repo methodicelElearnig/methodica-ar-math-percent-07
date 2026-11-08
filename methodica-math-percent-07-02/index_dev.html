@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>DEV — النسب المئوية 4.7</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #1a1a2e; font-family: monospace; }
+
+    #dev-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 44px;
+      background: #f9ca24; color: #1a1a2e;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 12px; z-index: 9999; font-size: 13px; font-weight: 700;
+      direction: ltr;
+      transition: background 0.2s ease;
+    }
+    /* review status of the CURRENT screen colors the whole bar:
+       green = approved, striped strong-yellow = needs fixing */
+    #dev-bar.st-ok  { background: #2ecc71; }
+    #dev-bar.st-fix {
+      background: repeating-linear-gradient(45deg, #f9ca24 0 18px, #f39c12 18px 36px);
+    }
+    .st-btn {
+      height: 28px; width: 34px; border: none; border-radius: 4px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    #st-ok    { background: #1e8f4e; color: #fff; }
+    #st-fix   { background: #b06f00; color: #fff; }
+    #st-clear { background: #1a1a2e; color: #f9ca24; }
+    #st-badge {
+      min-width: 74px; text-align: center;
+      padding: 3px 10px; border-radius: 1000px;
+      background: rgba(26, 26, 46, 0.85); color: #fff; font-size: 12px;
+    }
+    #dev-bar span { background: #1a1a2e; color: #f9ca24; padding: 2px 8px; border-radius: 4px; }
+    #dev-bar button {
+      height: 28px; padding: 0 12px; border: none; border-radius: 4px;
+      background: #1a1a2e; color: #f9ca24; font-weight: 700; cursor: pointer; font-size: 13px;
+    }
+    #dev-bar button:hover { background: #333; }
+    #dev-bar input[type=number] {
+      width: 54px; height: 28px; border: none; border-radius: 4px;
+      text-align: center; font-size: 14px; font-weight: 700;
+    }
+    #dev-bar select {
+      height: 28px; max-width: 260px; border: none; border-radius: 4px;
+      background: #1a1a2e; color: #f9ca24; font-weight: 700; font-size: 13px;
+      padding: 0 8px; cursor: pointer; direction: rtl;
+    }
+    #dev-label { margin-left: 6px; }
+
+    #lomda-frame {
+      position: fixed; top: 44px; left: 0; right: 0; bottom: 0;
+      border: none; width: 100%; height: calc(100% - 44px);
+    }
+  </style>
+</head>
+<body>
+
+<div id="dev-bar">
+  <span>DEV</span>
+  <button onclick="nav(+1)" title="التالي (RTL: يسار = التالي)">◀</button>
+  <span id="dev-label">S 0 / ?</span>
+  <button onclick="nav(-1)" title="السابق (RTL: يمين = السابق)">▶</button>
+  <input type="number" id="jump-input" min="0" value="0" onkeydown="if(event.key==='Enter')jumpTo()">
+  <button onclick="jumpTo()">Go</button>
+  <select id="screen-select" onchange="send(parseInt(this.value, 10))"></select>
+  <span id="st-badge">—</span>
+  <button class="st-btn" id="st-ok"    onclick="setStatus('ok')"    title="معتمد — راجعت وصادقت">✓</button>
+  <button class="st-btn" id="st-fix"   onclick="setStatus('fix')"   title="يحتاج إلى تصحيح">!</button>
+  <button class="st-btn" id="st-clear" onclick="setStatus(null)"    title="إعادة تعيين الحالة">↺</button>
+  <span style="margin-right:auto; font-size:11px; font-weight:400;">Ctrl+← التالي &nbsp;|&nbsp; Ctrl+→ السابق</span>
+</div>
+
+<iframe id="lomda-frame" src="index.html"></iframe>
+
+<script>
+  const UNIT_ID = 'methodica-math-percent-07';
+  let cur = 0;
+  let total = 1;
+
+  const frame  = document.getElementById('lomda-frame');
+  const label  = document.getElementById('dev-label');
+  const input  = document.getElementById('jump-input');
+  const select = document.getElementById('screen-select');
+
+  /* Named screens — extend as screens are added */
+  const SCREEN_NAMES = [
+    'شريحة 3 — خطّاف: خصم 100%',
+    'شريحة 4 — كشف: 25%',
+    'شريحة 5 — أين أخطأ طارق',
+    'شريحة 6 — انتقال: تخفيض مزدوج',
+    'شريحة 7 — موجَّه: لمحة',
+    'شريحة 8 — موجَّه خ1: الحساب',
+    'شريحة 9 — موجَّه خ2: 120',
+    'شريحة 10 — موجَّه خ3: 90%',
+    'شريحة 11 — موجَّه خ4: الكل الجديد',
+    'شريحة 12 — موجَّه خ5: كيف',
+    'شريحة 13 — موجَّه خ6: 108',
+    'شريحة 14 — موجَّه خ7: 30%',
+    'شريحة 15 — موجَّه: استنتاج',
+    'شريحة 16 — سحب: 3 قيم كلّية',
+    'شريحة 17 — التعرّف على التطبيق',
+    'شريحة 18 — ماذا تعلّمنا',
+    'شريحة 19 — قائمة المقاطع الأربعة',
+    'شريحة 20 — تكبير مزدوج: 519.75',
+    'شريحة 21 — تخفيض+تكبير: 5,200',
+    'شريحة 22 — هل لاحظتم؟ (بعد كل 4)',
+    'شريحة 23 — كرة طائرة: هل هذا صحيح؟',
+    'شريحة 24 — تكبير+تخفيض: 198',
+    'شريحة 26 — انتقال: المكوّن 2',
+    'شريحة 27 — خ1/4: تبرعات 1,380',
+    'شريحتان 28-34 — تمرير: خ2-خ4 (ادخار، مستطيل)',
+    '(ضمن تمرير 24)',
+    '(ضمن تمرير 24)',
+    '(ضمن تمرير 24)',
+    'شريحة 36 — انتقال: المكوّن 3',
+    'شريحة 37 — خ1أ/3: سينما',
+    'شريحة 38 — خ1ب/3: 32.4 شيكل',
+    'شريحة 39 — خ2أ/3: Black Friday',
+    'شريحة 40 — افتتاحية خ3: بيتزا',
+    'شريحة 41 — خ3أ/3: السعر نفسه',
+    'شريحة 42 — خ3ب/3: قانون التبديل',
+    'شريحة 43 — خ3ج/3: سحب تعابير',
+    'شريحة 44 — خ3د/3: نعم',
+    'شريحة 45 — انتقال: سؤال صعب',
+    'شريحة 46 — أ: 27%',
+    'شريحة 47 — ب: 60.588MB',
+    'شريحة 48 — ج: 25.2%',
+    'شريحة 50 — انتقال: المكوّن 4',
+    'شريحة 51 — مهمة صفّية: تعليمات',
+    'شريحة 52 — مهمة صفّية: إجابة',
+    'شريحة 53 — مهمة صفّية: شرح',
+    'شريحة 55 — انتقال: المكوّن 5',
+    'شريحة 56 — خ1/4: منتجان',
+    'شريحة 57 — افتتاحية خ2: تحدي الخطوات',
+    'شريحة 58 — خ2/4: أيّ مسار',
+    'شريحة 59 — خ3أ/4: 1.75a',
+    'شريحة 60 — خ3ب/4: 75%',
+    'شريحة 61 — خ4أ/4: اختيار من متعدد',
+    'شريحة 62 — خ4ب/4: 30.25',
+    'شريحة 64 — انتقال: سؤال القمة أ',
+    'شريحة 65 — خلفية: ثلاثة متاجر',
+    'شريحة 66 — القمة أ: 150 شيكل',
+    'شريحة 67 — خلفية: المتجر ب',
+    'شريحة 68 — القمة ب: 112.5',
+    'شريحة 69 — القمة ج: 112',
+    'شريحة 70 — خلفية: مقارنة الأسعار',
+    'شريحة 71 — القمة د: ترتيب العمليات',
+    'شريحة 73 — انتقال: سؤال القمة ب',
+    'شريحة 74 — خلفية: البحيرة',
+    'شريحة 75 — موعد ب أ: 42 ألف م³',
+    'شريحة 76 — موعد ب ب: 65%',
+    'شريحة 77 — موعد ب ج: شرح',
+    'شريحة 78 — النهاية',
+  ];
+  SCREEN_NAMES.forEach((name, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i + ' — ' + name;
+    select.appendChild(opt);
+  });
+
+  window.addEventListener('message', e => {
+    if (e.data?.type === 'DEV_READY') {
+      total = e.data.total;
+      updateLabel();
+    }
+    if (e.data?.type === 'DEV_SCREEN') {
+      cur = e.data.screen;
+      input.value = cur;
+      if ([...select.options].some(o => Number(o.value) === cur)) select.value = cur;
+      updateLabel();
+    }
+  });
+
+  /* QA 02.11.26: deck 28-34 are ONE scroll screen (24); 25-27 live inside it.
+     A jump to them lands on 24, and the arrows step over them. */
+  const FOLDED = { 25: 24, 26: 24, 27: 24 };
+  const unfold = (n, delta) => {
+    if (FOLDED[n] === undefined) return n;
+    if (delta > 0) { while (FOLDED[n] !== undefined) n++; return n; }
+    return FOLDED[n];
+  };
+  function send(n, delta) {
+    n = unfold(n, delta || 0);
+    frame.contentWindow.postMessage({ type: 'DEV_GOTO', screen: n }, '*');
+    cur = n;
+    input.value = n;
+    select.value = n;
+    updateLabel();
+  }
+
+  function nav(delta) {
+    const next = Math.max(0, Math.min(total - 1, cur + delta));
+    send(next, delta);
+  }
+
+  function jumpTo() {
+    const n = parseInt(input.value, 10);
+    if (!isNaN(n) && n >= 0 && n < total) send(n);
+  }
+
+  function updateLabel() {
+    label.textContent = 'S ' + cur + ' / ' + (total - 1);
+    renderStatus();
+  }
+
+  /* ── review status (producer workflow): green = approved, yellow =
+     needs fixing. Persisted per unit in localStorage. ── */
+  const REVIEW_KEY = 'dev_review_' + UNIT_ID;
+  function loadReview() {
+    try { return JSON.parse(localStorage.getItem(REVIEW_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveReview(r) {
+    try { localStorage.setItem(REVIEW_KEY, JSON.stringify(r)); } catch (e) {}
+  }
+  function setStatus(st) {
+    const r = loadReview();
+    if (st) r[cur] = st; else delete r[cur];
+    saveReview(r);
+    renderStatus();
+  }
+  function renderStatus() {
+    const r = loadReview();
+    const bar = document.getElementById('dev-bar');
+    bar.classList.toggle('st-ok',  r[cur] === 'ok');
+    bar.classList.toggle('st-fix', r[cur] === 'fix');
+    const badge = document.getElementById('st-badge');
+    badge.textContent = r[cur] === 'ok' ? 'معتمد ✓' : r[cur] === 'fix' ? 'للتصحيح !' : '—';
+    [...select.options].forEach(o => {
+      const n = Number(o.value);
+      const base = o.dataset.base || o.textContent;
+      o.dataset.base = base;
+      o.textContent = (r[n] === 'ok' ? '✓ ' : r[n] === 'fix' ? '⚠ ' : '') + base;
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'ArrowLeft')  nav(+1);
+    if (e.ctrlKey && e.key === 'ArrowRight') nav(-1);
+  });
+  renderStatus();
+</script>
+</body>
+</html>

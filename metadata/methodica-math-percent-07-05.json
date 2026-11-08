@@ -1,0 +1,32 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-05/",
+  "title": "تدريب متقدم",
+  "learningUnitId": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07/",
+  "componentPurpose": "both",
+  "isAssessment": false,
+  "manufacture": "methodica",
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 4,
+  "masteryLevel": "advanced",
+  "order": 5,
+  "depthLevel": "core-curriculum-advanced",
+  "cognitiveLevel": "process-thinking",
+  "languages": [
+    "Hebrew"
+  ],
+  "skills": [],
+  "estimatedTimeInMinutes": 14,
+  "createdAt": "2026-09-09T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/07/methodica-math-percent-07-05/methodica-math-percent-07-05-001/",
+      "title": "تدريب متقدم",
+      "informationToBot": "هدف البند: تدريب متقدم. تغيير مزدوج بالنسب المئوية — الكل الأصلي والكل الجديد والكل النهائي. [مسودة — بانتظار موافقة مطوّرة التعلّم]",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    }
+  ]
+}

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق: مرحلتان جديدتان</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+  :root {
+    --line: #DDDDDD;
+    --muted: #5F6368;
+    --accent: #1A73E8;
+    --ink: #202124;
+    --ok: #00B050;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; font-size: 18px; }
+  body {
+    font-family: Calibri, system-ui, sans-serif;
+    background: #FCFCFC;
+    color: var(--ink);
+    padding: 12px 16px 14px;
+  }
+
+  /* ---------- top bar ---------- */
+  /* RTL: flex-start is the RIGHT edge — keeps this clear of the host's
+     zoom magnifier, which sits at the embed's top-left. */
+  .ap-top { display: flex; justify-content: flex-start; }
+  .ap-restart {
+    font: inherit; font-size: 18px;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 16px; cursor: pointer; color: var(--ink);
+  }
+  .ap-restart:hover { background: #F1F3F4; }
+  .ap-restart svg { width: 17px; height: 17px; }
+
+  /* ---------- step tabs (RTL: first child is rightmost) ---------- */
+  .ap-tabs { display: flex; gap: 12px; margin-top: 10px; }
+  .ap-tab { flex: 1 1 0; text-align: center; }
+  .ap-tab-rail { height: 4px; border-radius: 4px; background: #E4E6E8; }
+  .ap-tab-label {
+    display: block; width: 100%; margin-top: 8px;
+    font: inherit; font-size: 18px; color: var(--muted);
+    background: none; border: 0; padding: 0; cursor: pointer;
+  }
+  .ap-tab.is-active .ap-tab-rail { background: var(--accent); }
+  .ap-tab.is-active .ap-tab-label { color: var(--accent); font-weight: 600; }
+  .ap-tab.is-locked .ap-tab-label { color: #B5B8BB; cursor: not-allowed; }
+
+  /* ---------- panels ---------- */
+  .ap-panel { display: none; padding-top: 14px; }
+  .ap-panel.is-active { display: block; }
+
+  .ap-field { margin-bottom: 10px; }
+  .ap-label { display: block; font-size: 18px; color: var(--muted); margin-bottom: 4px; }
+  .ap-row { display: flex; align-items: center; gap: 10px; }
+  .ap-num, .ap-dir {
+    font: inherit; font-size: 20px; color: var(--ink);
+    background: #fff; border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 12px; height: 40px;
+  }
+  .ap-num { width: 118px; text-align: center; }
+  .ap-dir { width: 148px; }
+  .ap-unit { font-size: 20px; color: var(--muted); }
+  .ap-start {
+    font: inherit; font-size: 18px; margin-top: 6px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 9px 22px; cursor: pointer; color: var(--ink);
+  }
+  .ap-start:hover { background: #F1F3F4; }
+
+  /* ---------- calculation panels ---------- */
+  .ap-head { font-size: 20px; font-weight: 700; margin: 0 0 12px; }
+  .ap-line { font-size: 20px; line-height: 1.7; margin: 0 0 8px; }
+  .ap-eq {
+    display: inline-block; direction: ltr; unicode-bidi: isolate;
+    font-size: 22px; font-weight: 700; color: var(--accent);
+  }
+  .ap-note { font-size: 18px; color: var(--muted); }
+  .ap-result {
+    margin-top: 14px; padding: 12px 16px;
+    background: #EDF8ED; border-radius: 12px;
+    font-size: 20px; font-weight: 700; color: #2C6B14;
+  }
+  .ap-result .ap-eq { color: #2C6B14; }
+  .ap-nav { margin-top: 16px; display: flex; gap: 10px; }
+  .ap-nav button {
+    font: inherit; font-size: 18px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 8px 20px; cursor: pointer; color: var(--ink);
+  }
+  .ap-nav button:hover { background: #F1F3F4; }
+  .ap-warn { color: #B20010; font-size: 18px; margin-top: 8px; }
+
+  /* Three actions do not fit one column in the height the host screen can
+     spare (deck slides 30/31 keep a story panel above the embed), so the
+     3-step variant lays the four inputs out two-up. */
+  body.ap-3 .ap-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 22px; }
+  body.ap-3 .ap-field { margin-bottom: 6px; }
+  body.ap-3 .ap-num, body.ap-3 .ap-dir { height: 38px; }
+  /* the two-up columns are ~240px, so select + input + the `%` glyph have to
+     fit inside that or the unit spills out of its field */
+  body.ap-3 .ap-row { gap: 8px; }
+  body.ap-3 .ap-num { width: 76px; }
+  body.ap-3 .ap-dir { width: 112px; }
+  body.ap-3 .ap-unit { font-size: 18px; }
+  body.ap-3 .ap-panel { padding-top: 10px; }
+
+  /* QA 02.11.26 (dslide 14): "why is the applet so pale?" and "not clear that
+     you have to move on to the second action". Stronger ink and rules, the
+     unit's purple instead of the screenshot's blue, every FORWARD button is a
+     filled primary, and the next step's tab is lit once the current one is done. */
+  :root { --line: #A9A9A9; --muted: #3C4043; --accent: #7100B9; }
+  body { background: #fff; }
+  .ap-tab-rail { background: #CFCFCF; }
+  .ap-tab.is-locked .ap-tab-label { color: #8A8D91; }
+  .ap-primary, .ap-nav .ap-primary {
+    background: #7100B9; border-color: #7100B9; color: #fff; font-weight: 600;
+  }
+  .ap-primary:hover, .ap-nav .ap-primary:hover { background: #5A0094; }
+  .ap-tab.is-next .ap-tab-rail { background: #C9A6E8; }
+  .ap-tab.is-next .ap-tab-label { color: var(--accent); font-weight: 600; }
+
+  /* QA 02.11.26 (dslide 14): tap gesture hint on the "פעולה 2" tab, shown
+     while the learner sits on step 1. Lifted verbatim from ratio-03 S08 (itself
+     mass-measure-01 S6): same hand (Figma "Cursor Click", 28x33), same ripple
+     geometry, colours and per-keyframe easing. Click family = loops until the
+     real action (reaching step 2), then never again. JS owns start/stop. */
+  .ap-tab { position: relative; }
+  /* anchor = the end of the word (RTL: its left edge), so the label stays readable */
+  .ap-gh { position: absolute; left: calc(50% - 46px); top: 25px; width: 0; height: 0;
+           pointer-events: none; z-index: 5; opacity: 0; transition: opacity .3s; }
+  .ap-gh.is-on { opacity: 1; }
+  .ap-gh-hand { position: absolute; width: 28px; height: 33px; left: -14px; top: -2px; pointer-events: none; }
+  .ap-gh-ring { position: absolute; border-radius: 50%; box-sizing: border-box; pointer-events: none; }
+  .ap-gh-ring1 { left: -21px; top: -21.5px; width: 42px; height: 43px;
+    background: #B9ECFF; border: 2.5px solid #00BAFF; animation: ap-gh-ring1 2s linear infinite; }
+  .ap-gh-ring2 { left: -4px; top: -4px; width: 8px; height: 8px;
+    background: transparent; border: 1.5px solid #B9ECFF; animation: ap-gh-ring2 2s linear infinite; }
+  .ap-gh:not(.is-on) .ap-gh-ring { animation-play-state: paused; }
+  @keyframes ap-gh-ring1 {
+    0%   { animation-timing-function: cubic-bezier(0.2, 0.4, 0.4, 1); opacity: 0;    scale: 0.05; }
+    5%   { animation-timing-function: ease-out;                      opacity: 0.85; scale: 0.22; }
+    35%  { animation-timing-function: ease-out;                      opacity: 0.65; scale: 0.6;  }
+    45%  { animation-timing-function: cubic-bezier(0.6, 0, 1, 1);    opacity: 0.35; scale: 0.85; }
+    50%  { opacity: 0; scale: 1; }
+    100% { opacity: 0; scale: 1; }
+  }
+  @keyframes ap-gh-ring2 {
+    0%   { animation-timing-function: cubic-bezier(0.05, 0.9, 0.1, 1); opacity: 0;    scale: 0.2; }
+    3%   { animation-timing-function: cubic-bezier(0.4, 0, 1, 1);      opacity: 0.75; scale: 1;   }
+    10%  { opacity: 0; scale: 1.1; }
+    100% { opacity: 0; scale: 1.1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ap-gh { display: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="ap-top">
+  <button class="ap-restart" type="button" onclick="apRestart()">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    البدء من جديد
+  </button>
+</div>
+
+<!-- RTL: the first child renders rightmost, so step 1 is on the right -->
+<div class="ap-tabs" id="ap-tabs">
+  <div class="ap-tab is-active" data-tab="0"><div class="ap-tab-rail"></div><button class="ap-tab-label" type="button" onclick="apGo(0)">معطيات السيناريو</button></div>
+  <div class="ap-tab is-locked" data-tab="1"><div class="ap-tab-rail"></div><button class="ap-tab-label" type="button" onclick="apGo(1)">العملية 1</button></div>
+  <div class="ap-tab is-locked" data-tab="2"><div class="ap-tab-rail"></div><button class="ap-tab-label" type="button" onclick="apGo(2)">العملية 2</button><div class="ap-gh" id="ap-gh" aria-hidden="true"><div class="ap-gh-ring ap-gh-ring1"></div><div class="ap-gh-ring ap-gh-ring2"></div><img class="ap-gh-hand" src="gesture-hand.svg" alt=""></div></div>
+  <div class="ap-tab is-locked" data-tab="4" id="ap-tab3" hidden><div class="ap-tab-rail"></div><button class="ap-tab-label" type="button" onclick="apGo(4)">العملية 3</button></div>
+  <div class="ap-tab is-locked" data-tab="3"><div class="ap-tab-rail"></div><button class="ap-tab-label" type="button" onclick="apGo(3)">الصيغة الشاملة</button></div>
+</div>
+
+<section class="ap-panel is-active" data-panel="0">
+  <div class="ap-fields">
+  <div class="ap-field">
+    <label class="ap-label" for="ap-base">الكل الأصلي (حسب القصة)</label>
+    <input class="ap-num" id="ap-base" type="text" inputmode="decimal" value="200">
+  </div>
+  <div class="ap-field">
+    <span class="ap-label">العملية الأولى</span>
+    <!-- QA 14.10.26: % renders RIGHT of its number — in this RTL row the
+         first child is rightmost, so the unit comes BEFORE the input -->
+    <div class="ap-row">
+      <select class="ap-dir" id="ap-dir1"><option value="up">زيادة</option><option value="down">تخفيض</option></select>
+      <span class="ap-unit">%</span>
+      <input class="ap-num" id="ap-pct1" type="text" inputmode="decimal" value="10">
+    </div>
+  </div>
+  <div class="ap-field">
+    <span class="ap-label">العملية الثانية (على الكل الجديد)</span>
+    <!-- QA 14.10.26: % renders RIGHT of its number — in this RTL row the
+         first child is rightmost, so the unit comes BEFORE the input -->
+    <div class="ap-row">
+      <select class="ap-dir" id="ap-dir2"><option value="up">زيادة</option><option value="down" selected>تخفيض</option></select>
+      <span class="ap-unit">%</span>
+      <input class="ap-num" id="ap-pct2" type="text" inputmode="decimal" value="20">
+    </div>
+  </div>
+  <div class="ap-field" id="ap-field3" hidden>
+    <span class="ap-label">العملية الثالثة (على الكل الجديد)</span>
+    <!-- QA 14.10.26: % renders RIGHT of its number — in this RTL row the
+         first child is rightmost, so the unit comes BEFORE the input -->
+    <div class="ap-row">
+      <select class="ap-dir" id="ap-dir3"><option value="up">زيادة</option><option value="down" selected>تخفيض</option></select>
+      <span class="ap-unit">%</span>
+      <input class="ap-num" id="ap-pct3" type="text" inputmode="decimal" value="5">
+    </div>
+  </div>
+  </div>
+  <button class="ap-start ap-primary" type="button" onclick="apStart()">بدء التدريب</button>
+  <p class="ap-warn" id="ap-warn" hidden>يجب إدخال أعداد في جميع الحقول.</p>
+</section>
+
+<section class="ap-panel" data-panel="1">
+  <h2 class="ap-head">العملية 1 - من الكل الأصلي إلى الكل الجديد</h2>
+  <p class="ap-line" id="ap1-l1"></p>
+  <p class="ap-line" id="ap1-l2"></p>
+  <div class="ap-result" id="ap1-res"></div>
+  <div class="ap-nav"><button class="ap-primary" type="button" onclick="apGo(2)">إلى العملية 2</button><button type="button" onclick="apGo(0)">العودة إلى المعطيات</button></div>
+</section>
+
+<section class="ap-panel" data-panel="2">
+  <h2 class="ap-head">العملية 2 - من الكل الجديد إلى الكل النهائي</h2>
+  <p class="ap-line" id="ap2-l1"></p>
+  <p class="ap-line" id="ap2-l2"></p>
+  <div class="ap-result" id="ap2-res"></div>
+  <div class="ap-nav"><button class="ap-primary" type="button" onclick="apGo(3)">إلى الصيغة الشاملة</button><button type="button" onclick="apGo(1)">العودة إلى العملية 1</button></div>
+</section>
+
+<section class="ap-panel" data-panel="4">
+  <h2 class="ap-head">العملية 3 - من الكل الجديد إلى الكل النهائي</h2>
+  <p class="ap-line" id="ap4-l1"></p>
+  <p class="ap-line" id="ap4-l2"></p>
+  <div class="ap-result" id="ap4-res"></div>
+  <div class="ap-nav"><button class="ap-primary" type="button" onclick="apGo(3)">إلى الصيغة الشاملة</button><button type="button" onclick="apGo(2)">العودة إلى العملية 2</button></div>
+</section>
+
+<section class="ap-panel" data-panel="3">
+  <h2 class="ap-head">الصيغة الشاملة</h2>
+  <p class="ap-line" id="ap3-l1"></p>
+  <div class="ap-result" id="ap3-res"></div>
+  <p class="ap-line ap-note" id="ap3-note"></p>
+  <div class="ap-nav"><button type="button" onclick="apGo(2)">العودة إلى العملية 2</button><button type="button" onclick="apRestart()">البدء من جديد</button></div>
+</section>
+
+<script>
+'use strict';
+
+/* the multiplier a percent change turns into: +10% -> 1.1, -20% -> 0.8 */
+function apFactor(dir, pct) { return dir === 'up' ? (100 + pct) / 100 : (100 - pct) / 100; }
+function apRemain(dir, pct) { return dir === 'up' ? 100 + pct : 100 - pct; }
+/* trim floating-point noise without inventing precision */
+function apNum(v) { return String(Math.round(v * 1e6) / 1e6); }
+function apLTR(s) { return '<span class="ap-eq">' + s + '</span>'; }
+
+let apState = null;
+
+/* ?steps=3 adds a third action — deck slides 30/31 carry the production note
+   "הפקה – שימו לב היישומון משתנה", i.e. the same applet with one more step. */
+const AP_STEPS = new URLSearchParams(location.search).get('steps') === '3' ? 3 : 2;
+if (AP_STEPS === 3) {
+  document.body.classList.add('ap-3');
+  document.getElementById('ap-field3').hidden = false;
+  document.getElementById('ap-tab3').hidden = false;
+}
+
+function apRead() {
+  const num = id => parseFloat(document.getElementById(id).value.replace(/,/g, ''));
+  const base = num('ap-base'), p1 = num('ap-pct1'), p2 = num('ap-pct2');
+  const p3 = AP_STEPS === 3 ? num('ap-pct3') : null;
+  if ([base, p1, p2].some(n => isNaN(n))) return null;
+  if (AP_STEPS === 3 && isNaN(p3)) return null;
+  return { base, p1, p2, p3,
+    d1: document.getElementById('ap-dir1').value,
+    d2: document.getElementById('ap-dir2').value,
+    d3: AP_STEPS === 3 ? document.getElementById('ap-dir3').value : null };
+}
+
+function apStart() {
+  const s = apRead();
+  document.getElementById('ap-warn').hidden = !!s;
+  if (!s) return;
+  apState = s;
+  s.mid = s.base * apFactor(s.d1, s.p1);
+  s.mid2 = s.mid * apFactor(s.d2, s.p2);
+  s.end = AP_STEPS === 3 ? s.mid2 * apFactor(s.d3, s.p3) : s.mid2;
+  apFill();
+  document.querySelectorAll('.ap-tab').forEach(t => t.classList.remove('is-locked'));
+  apGo(1);
+}
+
+function apFill() {
+  const s = apState;
+  const r1 = apRemain(s.d1, s.p1), r2 = apRemain(s.d2, s.p2);
+  const word1 = s.d1 === 'up' ? 'زيادة' : 'تخفيض';
+  const word2 = s.d2 === 'up' ? 'زيادة' : 'تخفيض';
+
+  document.getElementById('ap1-l1').innerHTML =
+    'الكل الأصلي هو ' + apLTR(apNum(s.base)) + '.';
+  document.getElementById('ap1-l2').innerHTML =
+    'بعد ' + word1 + ' بنسبة ' + apLTR(apNum(s.p1) + '%') + ' نحصل على ' + apLTR(apNum(r1) + '%') +
+    ' من الكل الأصلي، أي نضرب في ' + apLTR(apNum(apFactor(s.d1, s.p1))) + '.';
+  document.getElementById('ap1-res').innerHTML =
+    'الكل الجديد: ' + apLTR(apNum(r1) + '%∙' + apNum(s.base) + '=' + apNum(apFactor(s.d1, s.p1)) + '∙' + apNum(s.base) + '=' + apNum(s.mid));
+
+  document.getElementById('ap2-l1').innerHTML =
+    'تُحسب العملية الثانية من <strong>الكل الجديد</strong> - ' + apLTR(apNum(s.mid)) + ' - وليس من الكل الأصلي.';
+  document.getElementById('ap2-l2').innerHTML =
+    'بعد ' + word2 + ' بنسبة ' + apLTR(apNum(s.p2) + '%') + ' نحصل على ' + apLTR(apNum(r2) + '%') +
+    ' من الكل الجديد، أي نضرب في ' + apLTR(apNum(apFactor(s.d2, s.p2))) + '.';
+  document.getElementById('ap2-res').innerHTML =
+    (AP_STEPS === 3 ? 'الكل الجديد: ' : 'الكل النهائي: ') +
+    apLTR(apNum(r2) + '%∙' + apNum(s.mid) + '=' + apNum(apFactor(s.d2, s.p2)) + '∙' + apNum(s.mid) + '=' + apNum(s.mid2));
+  document.querySelector('[data-panel="2"] .ap-nav button').textContent =
+    AP_STEPS === 3 ? 'إلى العملية 3' : 'إلى الصيغة الشاملة';
+  document.querySelector('[data-panel="2"] .ap-nav button').onclick = () => apGo(AP_STEPS === 3 ? 4 : 3);
+
+  if (AP_STEPS === 3) {
+    const r3 = apRemain(s.d3, s.p3);
+    const word3 = s.d3 === 'up' ? 'زيادة' : 'تخفيض';
+    document.getElementById('ap4-l1').innerHTML =
+      'تُحسب العملية الثالثة من <strong>الكل الجديد</strong> - ' + apLTR(apNum(s.mid2)) + '.';
+    document.getElementById('ap4-l2').innerHTML =
+      'بعد ' + word3 + ' بنسبة ' + apLTR(apNum(s.p3) + '%') + ' نحصل على ' + apLTR(apNum(r3) + '%') +
+      ' منه، أي نضرب في ' + apLTR(apNum(apFactor(s.d3, s.p3))) + '.';
+    document.getElementById('ap4-res').innerHTML =
+      'الكل النهائي: ' + apLTR(apNum(r3) + '%∙' + apNum(s.mid2) + '=' + apNum(apFactor(s.d3, s.p3)) + '∙' + apNum(s.mid2) + '=' + apNum(s.end));
+  }
+
+  const factors = [apFactor(s.d1, s.p1), apFactor(s.d2, s.p2)]
+    .concat(AP_STEPS === 3 ? [apFactor(s.d3, s.p3)] : []);
+  document.getElementById('ap3-l1').innerHTML =
+    'يمكن دمج ' + (AP_STEPS === 3 ? 'العمليات الثلاث' : 'العمليتين') + ' في ضرب واحد:';
+  document.getElementById('ap3-res').innerHTML =
+    apLTR(apNum(s.base) + '∙' + factors.map(apNum).join('∙') + '=' + apNum(s.end));
+  document.getElementById('ap3-note').innerHTML =
+    'انتبهوا: لا نجمع النسب المئوية. تُحسب كل نسبة مئوية من كلٍّ مختلف.';
+}
+
+function apGo(i) {
+  if (i > 0 && !apState) return;
+  document.querySelectorAll('.ap-tab').forEach(t => t.classList.toggle('is-active', Number(t.dataset.tab) === i));
+  document.querySelectorAll('.ap-panel').forEach(p => p.classList.toggle('is-active', Number(p.dataset.panel) === i));
+  /* light the tab the learner should go to next (tab order = visual order) */
+  const tabs = [...document.querySelectorAll('.ap-tab')].filter(t => !t.hidden);
+  const at = tabs.findIndex(t => Number(t.dataset.tab) === i);
+  tabs.forEach((t, k) => t.classList.toggle('is-next', !!apState && i > 0 && k === at + 1));
+  /* gesture hint: on while step 1 is open, gone for good once step 2 is reached */
+  if (i === 2) apGhDone = true;
+  const gh = document.getElementById('ap-gh');
+  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gh.classList.toggle('is-on', AP_GH && i === 1 && !apGhDone && !reduce);
+}
+let apGhDone = false;
+/* ?gh=1 - only the host screen that introduces the applet (dslide 14) */
+const AP_GH = new URLSearchParams(location.search).get('gh') === '1';
+
+function apRestart() {
+  apState = null;
+  document.querySelectorAll('.ap-tab').forEach(t => {
+    t.classList.toggle('is-locked', Number(t.dataset.tab) > 0);
+  });
+  document.querySelector('[data-panel="2"] .ap-nav button').textContent =
+    AP_STEPS === 3 ? 'إلى العملية 3' : 'إلى الصيغة الشاملة';
+  document.getElementById('ap-warn').hidden = true;
+  apGo(0);
+}
+</script>
+</body>
+</html>
